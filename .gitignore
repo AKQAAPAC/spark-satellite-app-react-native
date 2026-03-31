@@ -1,0 +1,80 @@
+# -----------------------------------------------------------------------------
+# React Native / Expo — commit: app source, config, plugins, assets, lockfile.
+# Do not commit: dependencies, generated native projects, secrets, local tooling.
+# Regenerate native: npm install && npx expo prebuild
+# -----------------------------------------------------------------------------
+
+# Dependencies
+node_modules/
+
+# Expo / Metro
+.expo/
+dist/
+web-build/
+.metro-health-check*
+
+# Native projects (created by `npx expo prebuild` from app.config.js + plugins)
+ios/
+android/
+
+# If you ever stop ignoring ios/ or android/ above, also ensure these never ship:
+#   android/local.properties, android/app/build/, ios/Pods/, ios/build/
+
+# EAS (local CLI state; eas.json itself is usually committed)
+.eas/
+
+# Local env & secrets (template stays in repo)
+.env*
+!.env.example
+
+# Android signing / keystores
+*.jks
+*.keystore
+
+# Apple signing & provisioning
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# EAS credentials file if present at project root
+credentials.json
+
+# Build outputs (if you build into the project tree)
+*.apk
+*.aab
+*.ipa
+*.xcarchive/
+
+# Xcode / CocoaPods user state (safety if native folders are ever tracked)
+**/xcuserdata/
+**/DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+
+# Merge / patch noise
+*.orig
+*.orig.*
+*.rej
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Test / tooling
+coverage/
+.cache/
+*.tsbuildinfo
+
+# Ruby (Bundler + CocoaPods)
+vendor/bundle/
