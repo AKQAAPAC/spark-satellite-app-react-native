@@ -23,7 +23,7 @@
     "react-native-safe-area-context": "5.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.29.6",
     "@types/react": "~19.0.10",
     "dotenv": "^16.4.5",
     "typescript": "~5.8.3"
