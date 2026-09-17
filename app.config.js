@@ -14,7 +14,7 @@ module.exports = {
   expo: {
     name: 'RN Spark Satellite Weather',
     slug: 'sparksatelliteweather-reactnative',
-    version: '1.0.0',
+    version: '1.1.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'dark',
@@ -68,8 +68,15 @@ module.exports = {
       [
         'expo-build-properties',
         {
-          // iOS deploymentTarget: use Expo default or set in Podfile / Xcode if needed.
-          android: { compileSdkVersion: 35, targetSdkVersion: 35 },
+          // Align Android with SparkSatelliteWeather-Android (compile 37 / target 36).
+          // enableSceneSupport: required to launch on iOS 27 SDK / Xcode 27 (SDK 57.0.23+).
+          android: {
+            compileSdkVersion: 37,
+            targetSdkVersion: 36,
+          },
+          ios: {
+            enableSceneSupport: true,
+          },
         },
       ],
       './plugins/withMapsApiKeyFromLocalProperties.js',

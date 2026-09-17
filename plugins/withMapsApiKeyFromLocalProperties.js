@@ -10,7 +10,7 @@ const {
   withAppBuildGradle,
   withDangerousMod,
   AndroidConfig,
-} = require('@expo/config-plugins');
+} = require('expo/config-plugins');
 const { getMainApplicationOrThrow, addMetaDataItemToMainApplication } = AndroidConfig.Manifest;
 
 const API_KEY_META_NAME = 'com.google.android.geo.API_KEY';
@@ -44,9 +44,10 @@ function withMapsApiKeyFromLocalProperties(config) {
   config = withAppBuildGradle(config, (config) => {
     if (config.modResults.language !== 'groovy') return config;
     let contents = config.modResults.contents;
-    const marker = /(\s+versionName "1\.0\.0"\n)(\s+\})/;
-    if (marker.test(contents)) {
-      const injection = `
+    if (contents.includes('MAPS_API_KEY: localProperties.getProperty')) {
+      return config;
+    }
+    const injection = `
         def localProperties = new Properties()
         def localPropertiesFile = rootProject.file('local.properties')
         if (localPropertiesFile.exists()) {
@@ -54,7 +55,10 @@ function withMapsApiKeyFromLocalProperties(config) {
         }
         manifestPlaceholders = [MAPS_API_KEY: localProperties.getProperty('MAPS_API_KEY', '')]
 `;
-      contents = contents.replace(marker, `$1${injection}\n    $2`);
+    // Any versionName — do not pin 1.0.0 (broke after the 1.1.0 bump).
+    const versionName = /(\s+versionName\s+"[^"]+"\s*\n)/;
+    if (versionName.test(contents)) {
+      contents = contents.replace(versionName, `$1${injection}`);
       config.modResults.contents = contents;
     }
     return config;

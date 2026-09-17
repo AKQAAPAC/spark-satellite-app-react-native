@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   radarOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     borderRadius: 12,
     opacity: 0.82,
   },
