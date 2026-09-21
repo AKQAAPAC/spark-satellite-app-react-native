@@ -8,6 +8,7 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 
 ## Table of contents
 
+- [Screenshots](#screenshots)
 - [How to use the app](#how-to-use-the-app)
 - [Satellite connectivity in development and testing](#satellite-connectivity-in-development-and-testing)
 - [Requirements](#requirements)
@@ -17,6 +18,26 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 - [Project structure (connectivity and location)](#project-structure-connectivity-and-location)
 - [License](#license)
 
+## Screenshots
+
+**Light and dark themes** — Spark appearance.
+
+**iOS**
+
+<p align="center">
+  <img src="docs/screenshots/ios-light-theme.png" alt="iOS light theme — home screen with forecast, hourly strip, and rain map" width="280">
+  &nbsp;
+  <img src="docs/screenshots/ios-dark-theme.png" alt="iOS dark theme — home screen with forecast, hourly strip, and rain map" width="280">
+</p>
+
+**Android**
+
+<p align="center">
+  <img src="docs/screenshots/android-light-theme.png" alt="Android light theme — home screen with forecast, hourly strip, and rain map" width="280">
+  &nbsp;
+  <img src="docs/screenshots/android-dark-theme.png" alt="Android dark theme — home screen with forecast, hourly strip, and rain map" width="280">
+</p>
+
 ## How to use the app
 
 1. Start the dev server: **`npx expo start`**.
@@ -24,6 +45,7 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 3. Grant **location** permission when prompted.
 4. The app loads weather for the current location. Use **Refresh** to update.
 5. Select a day in the list to see that day’s details and hourly strip. When connection is **Good**, the **rain map** appears with Older/Newer to step through radar frames; when Low or None, a placeholder is shown.
+6. Tap **sun** or **moon** in the bottom tab bar to switch between light and dark Spark themes.
 
 ## Satellite connectivity in development and testing
 
@@ -184,7 +206,8 @@ These steps install and run the app on a **real device** (development build). Yo
 | `src/connectivity/` | **useConnectivity()** returns `'good' \| 'low' \| 'none'`. Uses **native ConnectivityStatus** only (iOS constrained path; Android TRANSPORT_SATELLITE). See [docs/SATELLITE.md](docs/SATELLITE.md). |
 | `src/components/StatusBar.tsx` | Status line + Refresh; last successful load time under Refresh when available. |
 | `src/components/RainMapSection.tsx` | Rain map only when connectivity is good; placeholder when low/none. |
-| `src/screens/WeatherScreen.tsx` | **useConnectivity()**; passes connectivity to StatusBar, WeatherCard, RainMapSection, and hourly strip visibility. |
+| `src/screens/WeatherScreen.tsx` | **useConnectivity()**; passes connectivity to StatusBar, WeatherCard, RainMapSection, and hourly strip visibility; theme toggle. |
+| `src/theme/` | Spark design tokens (`SparkColors`), spacing, radius, typography; light/dark palettes with persisted preference. |
 | `src/hooks/useLocation.ts` | Expo Location: permission, coords, reverse geocode for place name. |
 
 Weather data comes from **Open-Meteo** (no API key); radar frames from RainViewer. See `src/api/` and [docs/SATELLITE.md](docs/SATELLITE.md).

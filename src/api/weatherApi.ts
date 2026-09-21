@@ -8,7 +8,7 @@ import { fetchJsonWithTimeout } from './fetchWithTimeout';
 /** Same as SparkSatelliteWeather-Android `NetworkModule` OkHttp connect/read timeouts (30s each). */
 const WEATHER_TIMEOUT_MS = 30_000;
 
-const USER_AGENT = `SparkSatelliteWeather/1.1 (${Platform.OS === 'ios' ? 'iOS' : 'Android'})`;
+const USER_AGENT = `SparkSatelliteWeather/1.2 (${Platform.OS === 'ios' ? 'iOS' : 'Android'})`;
 
 interface OpenMeteoDaily {
   time: string[];

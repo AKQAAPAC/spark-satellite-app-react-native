@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Pressable,
   Linking,
+  ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useConnectivity } from '../connectivity';
@@ -15,57 +16,19 @@ import { StatusBar } from '../components/StatusBar';
 import { WeatherCard } from '../components/WeatherCard';
 import { HourlyStrip } from '../components/HourlyStrip';
 import { RainMapSection } from '../components/RainMapSection';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { useLocation } from '../hooks/useLocation';
 import { fetchWeather } from '../api';
 import type { CurrentWeather, DayForecast, HourForecast } from '../types/weather';
 import { remainingHoursToday, hoursForDate } from '../utils/hourlyFilter';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#603494',
-  },
-  containerCards: {
-    flexGrow: 1,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  loading: {
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  locationPrompt: {
-    padding: 24,
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center',
-  },
-  locationPromptText: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.95)',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  openSettingsButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-  },
-  openSettingsButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-});
+import { useSparkAppearance } from '../theme';
+import { planCardStyle, SparkTheme } from '../theme/SparkTheme';
 
 /** Cap for location step; slow GNSS (e.g. satellite) can exceed Expo’s internal timeouts. */
 const LOCATION_STEP_MS = 60_000;
 
 export function WeatherScreen() {
+  const { colors } = useSparkAppearance();
   const connectivity = useConnectivity();
   const { coords, placeName, noLocation, requestLocation } = useLocation();
   const coordsRef = useRef(coords);
@@ -184,6 +147,7 @@ export function WeatherScreen() {
     <View
       style={[
         styles.container,
+        { backgroundColor: colors.bgCanvas },
         {
           paddingTop: insets.top,
           paddingBottom: insets.bottom,
@@ -192,19 +156,27 @@ export function WeatherScreen() {
         },
       ]}
     >
-      <StatusBar connectivity={connectivity} lastFetchAt={lastFetchAt} onRefresh={onRefresh} />
-      <View style={styles.containerCards}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <StatusBar connectivity={connectivity} lastFetchAt={lastFetchAt} onRefresh={onRefresh} />
         {showSpinner ? (
           <View style={styles.loading}>
-            <ActivityIndicator size="large" color="#fff" />
+            <ActivityIndicator size="large" color={colors.ctaCyan} />
           </View>
         ) : showLocationPrompt ? (
-          <View style={styles.locationPrompt}>
-            <Text style={styles.locationPromptText}>
+          <View style={[styles.locationPrompt, planCardStyle(colors)]}>
+            <Text style={[styles.locationPromptText, SparkTheme.Typography.body, { color: colors.textOnDark }]}>
               Location access was denied or unavailable. Open Settings to allow location, then tap Refresh.
             </Text>
-            <Pressable style={styles.openSettingsButton} onPress={() => Linking.openSettings()}>
-              <Text style={styles.openSettingsButtonText}>Open Settings</Text>
+            <Pressable
+              style={[styles.openSettingsButton, { backgroundColor: colors.ctaCyan }]}
+              onPress={() => Linking.openSettings()}
+            >
+              <Text style={[styles.openSettingsButtonText, SparkTheme.Typography.planLabel, { color: colors.bgBrand }]}>
+                Open Settings
+              </Text>
             </Pressable>
           </View>
         ) : (
@@ -223,9 +195,19 @@ export function WeatherScreen() {
               neverLoaded={neverLoaded}
               onSelectDay={setSelectedDate}
             />
-            {!weatherError && connectivity !== 'none' && (
+            {!weatherError && connectivity === 'none' ? (
+              <Text
+                style={[
+                  styles.noConnection,
+                  SparkTheme.Typography.body,
+                  { color: colors.textInverse, opacity: 0.85 },
+                ]}
+              >
+                No connection.
+              </Text>
+            ) : !weatherError ? (
               <HourlyStrip hours={displayHours} isToday={isShowingToday} />
-            )}
+            ) : null}
             <RainMapSection
               connectivity={connectivity}
               latitude={coords?.latitude ?? null}
@@ -234,7 +216,42 @@ export function WeatherScreen() {
             />
           </>
         )}
-      </View>
+        <ThemeToggle />
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: SparkTheme.Spacing.sm,
+    paddingBottom: SparkTheme.Spacing.md,
+    gap: SparkTheme.Spacing.sm,
+  },
+  loading: {
+    padding: SparkTheme.Spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  locationPrompt: {
+    marginHorizontal: SparkTheme.Spacing.lg,
+    alignItems: 'center',
+  },
+  locationPromptText: {
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  openSettingsButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: SparkTheme.Radius.sm,
+  },
+  openSettingsButtonText: {},
+  noConnection: {
+    textAlign: 'center',
+    paddingVertical: SparkTheme.Spacing.md,
+  },
+});

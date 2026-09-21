@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - Spark design system
+
+- Apply Spark Generative Commerce tokens (color, spacing, radius, type) across the weather UI.
+- Dark canvas with plan-style cards, cyan Refresh, and shared selected-day / Now highlight.
+- Light theme with white background; Spark tab-bar pill toggles light/dark (persisted).
+- Scrollable layout, low–high temperature ranges, and hour pills with precip + wind on separate lines.
+- Aligned with [SparkSatelliteWeather-iOS v1.2.0](https://github.com/AKQAAPAC/spark-satellite-app-ios/pull/2).
+
 ## [1.1.0] - Toolchain upgrade
 
 - Upgrade Expo SDK 53 → 57 (React Native 0.86, React 19.2, TypeScript 6).

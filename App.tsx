@@ -6,6 +6,19 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WeatherScreen } from './src/screens/WeatherScreen';
+import { SparkAppearanceProvider, useSparkAppearance } from './src/theme';
+import { SparkColorsDark } from './src/theme/SparkTheme';
+
+function AppContent() {
+  const { appearance } = useSparkAppearance();
+
+  return (
+    <>
+      <StatusBar style={appearance === 'dark' ? 'light' : 'dark'} />
+      <WeatherScreen />
+    </>
+  );
+}
 
 // Load Ionicons font for vector icons.
 export default function App() {
@@ -15,16 +28,24 @@ export default function App() {
 
   if (!fontsLoaded && !fontError) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#603494' }}>
-        <ActivityIndicator size="large" color="#fff" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: SparkColorsDark.bgCanvas,
+        }}
+      >
+        <ActivityIndicator size="large" color={SparkColorsDark.ctaCyan} />
       </View>
     );
   }
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
-      <WeatherScreen />
+      <SparkAppearanceProvider>
+        <AppContent />
+      </SparkAppearanceProvider>
     </SafeAreaProvider>
   );
 }
