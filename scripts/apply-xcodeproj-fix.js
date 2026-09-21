@@ -4,7 +4,26 @@
 const path = require('path');
 const fs = require('fs');
 
-const root = path.join(__dirname, '..', 'node_modules', '@expo', 'config-plugins', 'build');
+function resolveConfigPluginsBuild() {
+  const candidates = [
+    path.join(__dirname, '..', 'node_modules', '@expo', 'config-plugins', 'build'),
+    path.join(__dirname, '..', 'node_modules', 'expo', 'node_modules', '@expo', 'config-plugins', 'build'),
+  ];
+  try {
+    const { createRequire } = require('module');
+    const fromExpo = createRequire(require.resolve('expo/config-plugins'));
+    candidates.unshift(path.join(path.dirname(fromExpo.resolve('@expo/config-plugins/package.json')), 'build'));
+  } catch {
+    /* fall through to path candidates */
+  }
+  return candidates.find((dir) => fs.existsSync(dir));
+}
+
+const root = resolveConfigPluginsBuild();
+if (!root) {
+  console.log('Skipped iOS prebuild patches (@expo/config-plugins not found)');
+  process.exit(0);
+}
 
 // Xcodeproj.js: ensure valid project instance in mod chain
 const xcodeprojPath = path.join(root, 'ios', 'utils', 'Xcodeproj.js');

@@ -1,6 +1,6 @@
 {
   "name": "sparksatelliteweather-reactnative",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -10,26 +10,27 @@
     "postinstall": "node scripts/apply-xcodeproj-fix.js && node scripts/copy-ionicons-font.js"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.0",
-    "expo": "~53.0.0",
-    "expo-asset": "~11.1.7",
-    "expo-build-properties": "~0.14.8",
-    "expo-font": "~13.3.2",
-    "expo-location": "~18.1.6",
-    "expo-status-bar": "~2.2.3",
-    "react": "19.0.0",
-    "react-native": "0.79.6",
-    "react-native-maps": "1.20.1",
-    "react-native-safe-area-context": "5.4.0"
+    "@expo/vector-icons": "^15.0.2",
+    "babel-preset-expo": "~57.0.0",
+    "expo": "^57.0.23",
+    "expo-asset": "~57.0.17",
+    "expo-build-properties": "~57.0.20",
+    "expo-font": "~57.0.4",
+    "expo-location": "~57.0.18",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-maps": "1.27.2",
+    "react-native-safe-area-context": "~5.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~19.0.10",
+    "@types/react": "~19.2.4",
     "dotenv": "^16.4.5",
-    "typescript": "~5.8.3"
+    "typescript": "~6.0.3"
   },
   "private": true,
   "engines": {
-    "node": ">=18"
+    "node": ">=22.13.0"
   }
 }

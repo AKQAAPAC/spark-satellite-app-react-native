@@ -1,8 +1,8 @@
 # Spark Satellite Weather (React Native)
 
-[![React Native](https://img.shields.io/badge/React%20Native-0.79-blue.svg)](https://reactnative.dev)
-[![Expo](https://img.shields.io/badge/Expo-53-black.svg)](https://expo.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org)
+[![React Native](https://img.shields.io/badge/React%20Native-0.86-blue.svg)](https://reactnative.dev)
+[![Expo](https://img.shields.io/badge/Expo-57-black.svg)](https://expo.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-blue.svg)](https://www.typescriptlang.org)
 
 Spark Satellite Weather is a **weather demo app**: it shows current conditions, a 7‑day forecast with hourly breakdown, and a rain radar map for your location. The app’s main purpose is to demonstrate **satellite (connection-aware) behaviour**. When the device is on **satellite** or constrained connectivity, the app can show **"Status: Low data"**; Wi‑Fi, Ethernet, and cellular (4G/5G) are treated as **Good** in the status bar—for example the rain map is only loaded when status is Good data. All weather and radar data use the **device location**; there is no fallback if location is unavailable.
 
@@ -29,15 +29,16 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 
 - **What you see:** The status bar shows **"Status: Good data"** / **"Status: Low data"** / **"Status: No data"**. Good = full map and forecast; Low = rain map hidden (e.g. real satellite).
 - **Real satellite:** Use a **development build** (**`npx expo prebuild`** then **`npx expo run:ios`** or **`npx expo run:android`**), not Expo Go. On satellite or ultra-constrained links, the native module reports **Low**; Wi‑Fi / normal cellular are **Good**. HTTPS on satellite also requires platform opt-in (Android manifest meta-data, iOS entitlements) — see [docs/SATELLITE.md](docs/SATELLITE.md).
-- **iOS (Spark satellite):** Same recommendation as **SparkSatelliteWeather-iOS** — **iOS 26.4+** on device and **Xcode 26.4+** for builds; the native Swift app documents **`allowsUltraConstrainedNetworkAccess`** for weather HTTPS. This project uses **`fetch`** for weather; see [docs/SATELLITE.md](docs/SATELLITE.md) and the iOS repo README if you need parity details.
+- **iOS (Spark satellite):** Same recommendation as **SparkSatelliteWeather-iOS** — **iOS 26.4+** on device and **Xcode 26.4+** for builds (verified on **Xcode 27** / iOS 27 SDK). The native Swift app documents **`allowsUltraConstrainedNetworkAccess`** for weather HTTPS. This project uses **`fetch`** for weather; see [docs/SATELLITE.md](docs/SATELLITE.md) and the iOS repo README if you need parity details.
 - **Simulate without satellite hardware:** **`CONNECTIVITY_OVERRIDE=low npx expo start`** (values: `good`, `low`, `none`). Restart Metro to change. **Expo Go** can use this override for UI only; it does not load the native connectivity module.
 - **How behaviour changes:** When **Good**, the rain map loads; when **Low** or **None**, the rain map shows a placeholder.
 - **Details:** [docs/SATELLITE.md](docs/SATELLITE.md) — implementation, **`getIsUsingNativeConnectivity()`**, and **Building an app** checklist.
 
 ## Requirements
 
-- **iOS device builds (Spark satellite):** **Xcode 26.4+** and **iOS 26.4+** on device when testing real ultra-constrained/satellite networking (aligned with **SparkSatelliteWeather-iOS**).
-- **Node.js** 18+
+- **iOS device builds (Spark satellite):** **Xcode 26.4+** (verified on **Xcode 27**) and **iOS 26.4+** on device when testing real ultra-constrained/satellite networking (aligned with **SparkSatelliteWeather-iOS**). SDK 57 enables UIKit scene support so the app launches when built with the iOS 27 SDK.
+- **Android native builds:** **`compileSdk` 37** / **`targetSdk` 36** (aligned with **SparkSatelliteWeather-Android**). Opening the generated `android/` folder in Android Studio needs a recent Studio (Quail 4+ recommended if you sync AGP from the native Android repo).
+- **Node.js** 22.13+
 - **npm** or **yarn**
 - **Expo Go** (for device/simulator) or **EAS Build** for standalone builds
 - **Location permission** — For weather and rain map
@@ -174,7 +175,7 @@ These steps install and run the app on a **real device** (development build). Yo
 
 ## Documentation
 
-- **[docs/SATELLITE.md](docs/SATELLITE.md)** — Good/low/none, dev build vs Expo Go, code map, Android/iOS opt-in for traffic on satellite, and **Building an app** checklist.
+- **[docs/SATELLITE.md](docs/SATELLITE.md)** — Good/low/none, testing overrides, Android/iOS opt-in for traffic on satellite, and **how to use the same pattern on older vs newer Android versions** (API 26 through 37+).
 
 ## Project structure (connectivity and location)
 

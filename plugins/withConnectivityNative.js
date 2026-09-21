@@ -12,12 +12,16 @@ const {
   withXcodeProject,
   withAndroidManifest,
   AndroidConfig,
-} = require('@expo/config-plugins');
+} = require('expo/config-plugins');
 const { getMainApplicationOrThrow, addMetaDataItemToMainApplication } = AndroidConfig.Manifest;
 
 /** https://developer.android.com/develop/connectivity/satellite/constrained-networks */
 const SATELLITE_DATA_OPTIMIZED_META = 'android.telephony.PROPERTY_SATELLITE_DATA_OPTIMIZED';
-const { addBuildSourceFileToGroup, getProjectName } = require('@expo/config-plugins/build/ios/utils/Xcodeproj');
+const { createRequire } = require('module');
+const requireFromExpo = createRequire(require.resolve('expo/config-plugins'));
+const { addBuildSourceFileToGroup, getProjectName } = requireFromExpo(
+  '@expo/config-plugins/build/ios/utils/Xcodeproj'
+);
 
 /**
  * Link a system framework on the app target.
@@ -371,11 +375,25 @@ function injectNativeModulesIntoMainApplication(mainApp) {
 
   if (
     s.includes('ConnectivityStatusPackage') &&
-    s.includes('return packages + listOf') &&
     !s.includes('WeatherFetchPackage')
   ) {
     return s;
   }
+
+  // Expo SDK 57+: packages are registered on ExpoReactHostFactory via PackageList.apply.
+  if (s.includes('PackageList(this).packages.apply') && !s.includes('ConnectivityStatusPackage')) {
+    if (s.includes('// add(MyReactNativePackage())')) {
+      return s.replace(
+        '// add(MyReactNativePackage())',
+        '// add(MyReactNativePackage())\n          add(com.akqa.rnsparksatelliteweather.connectivity.ConnectivityStatusPackage())'
+      );
+    }
+    return s.replace(
+      'PackageList(this).packages.apply {',
+      'PackageList(this).packages.apply {\n          add(com.akqa.rnsparksatelliteweather.connectivity.ConnectivityStatusPackage())'
+    );
+  }
+
   if (s.includes('return packages') && !s.includes('return packages + listOf')) {
     return s.replace('return packages', `return packages + ${MAIN_APPLICATION_CONNECTIVITY_PACKAGES}`);
   }
