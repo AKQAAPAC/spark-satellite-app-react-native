@@ -8,6 +8,7 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 
 ## Table of contents
 
+- [Screenshots](#screenshots)
 - [How to use the app](#how-to-use-the-app)
 - [Satellite connectivity in development and testing](#satellite-connectivity-in-development-and-testing)
 - [Requirements](#requirements)
@@ -16,6 +17,26 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 - [Documentation](#documentation)
 - [Project structure (connectivity and location)](#project-structure-connectivity-and-location)
 - [License](#license)
+
+## Screenshots
+
+**Light and dark themes** — Spark appearance.
+
+**iOS**
+
+<p align="center">
+  <img src="docs/screenshots/ios-light-theme.png" alt="iOS light theme — home screen with forecast, hourly strip, and rain map" width="280">
+  &nbsp;
+  <img src="docs/screenshots/ios-dark-theme.png" alt="iOS dark theme — home screen with forecast, hourly strip, and rain map" width="280">
+</p>
+
+**Android**
+
+<p align="center">
+  <img src="docs/screenshots/android-light-theme.png" alt="Android light theme — home screen with forecast, hourly strip, and rain map" width="280">
+  &nbsp;
+  <img src="docs/screenshots/android-dark-theme.png" alt="Android dark theme — home screen with forecast, hourly strip, and rain map" width="280">
+</p>
 
 ## How to use the app
 
