@@ -80,3 +80,12 @@ export function planCardStyle(colors: SparkColors) {
     borderRadius: SparkTheme.Radius.md,
   };
 }
+
+/** Apply opacity to a #RRGGBB Spark token (matches SwiftUI `.opacity()` on theme colors). */
+export function colorWithOpacity(hex: string, opacity: number): string {
+  const normalized = hex.replace('#', '');
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}

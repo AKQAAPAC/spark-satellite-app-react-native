@@ -6,15 +6,15 @@ import {
   Text,
   StyleSheet,
   Image,
-  Pressable,
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 import MapView from 'react-native-maps';
 import { fetchRadarFrames, type RadarFrame } from '../api';
 import type { Connectivity } from '../connectivity/types';
 import { useSparkAppearance } from '../theme';
-import { planCardStyle, SparkTheme } from '../theme/SparkTheme';
+import { colorWithOpacity, planCardStyle, SparkTheme } from '../theme/SparkTheme';
 
 const MAP_HEIGHT = 148;
 
@@ -32,6 +32,7 @@ export function RainMapSection({
   noLocation,
 }: RainMapSectionProps) {
   const { colors } = useSparkAppearance();
+  const sliderTrackColor = colorWithOpacity(colors.textOnDark, 0.35);
   const [frames, setFrames] = useState<RadarFrame[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [radarError, setRadarError] = useState(false);
@@ -172,25 +173,27 @@ export function RainMapSection({
             </View>
             {frames.length > 0 && (
               <View style={styles.sliderRow}>
-                <Pressable
-                  style={styles.sliderButton}
-                  onPress={() => setSelectedIndex((i) => Math.max(0, i - 1))}
-                >
-                  <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
-                    Older
-                  </Text>
-                </Pressable>
                 <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
-                  {selectedIndex + 1} / {frames.length}
+                  Older
                 </Text>
-                <Pressable
-                  style={styles.sliderButton}
-                  onPress={() => setSelectedIndex((i) => Math.min(frames.length - 1, i + 1))}
-                >
-                  <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
-                    Newer
-                  </Text>
-                </Pressable>
+                <Slider
+                  style={styles.slider}
+                  value={selectedIndex}
+                  onValueChange={(value) =>
+                    setSelectedIndex(
+                      Math.min(frames.length - 1, Math.max(0, Math.round(value)))
+                    )
+                  }
+                  minimumValue={0}
+                  maximumValue={Math.max(0, frames.length - 1)}
+                  step={1}
+                  minimumTrackTintColor={sliderTrackColor}
+                  maximumTrackTintColor={sliderTrackColor}
+                  thumbTintColor={colors.ctaCyan}
+                />
+                <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
+                  Newer
+                </Text>
               </View>
             )}
             <View style={styles.footer}>
@@ -256,13 +259,14 @@ const styles = StyleSheet.create({
   sliderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
+    gap: SparkTheme.Spacing.sm,
   },
-  sliderLabel: {},
-  sliderButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+  sliderLabel: {
+    flexShrink: 0,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
   },
   footer: {
     alignItems: 'center',
