@@ -24,6 +24,7 @@ Spark Satellite Weather is a **weather demo app**: it shows current conditions, 
 3. Grant **location** permission when prompted.
 4. The app loads weather for the current location. Use **Refresh** to update.
 5. Select a day in the list to see that day’s details and hourly strip. When connection is **Good**, the **rain map** appears with Older/Newer to step through radar frames; when Low or None, a placeholder is shown.
+6. Tap **sun** or **moon** in the bottom tab bar to switch between light and dark Spark themes.
 
 ## Satellite connectivity in development and testing
 
@@ -184,7 +185,8 @@ These steps install and run the app on a **real device** (development build). Yo
 | `src/connectivity/` | **useConnectivity()** returns `'good' \| 'low' \| 'none'`. Uses **native ConnectivityStatus** only (iOS constrained path; Android TRANSPORT_SATELLITE). See [docs/SATELLITE.md](docs/SATELLITE.md). |
 | `src/components/StatusBar.tsx` | Status line + Refresh; last successful load time under Refresh when available. |
 | `src/components/RainMapSection.tsx` | Rain map only when connectivity is good; placeholder when low/none. |
-| `src/screens/WeatherScreen.tsx` | **useConnectivity()**; passes connectivity to StatusBar, WeatherCard, RainMapSection, and hourly strip visibility. |
+| `src/screens/WeatherScreen.tsx` | **useConnectivity()**; passes connectivity to StatusBar, WeatherCard, RainMapSection, and hourly strip visibility; theme toggle. |
+| `src/theme/` | Spark design tokens (`SparkColors`), spacing, radius, typography; light/dark palettes with persisted preference. |
 | `src/hooks/useLocation.ts` | Expo Location: permission, coords, reverse geocode for place name. |
 
 Weather data comes from **Open-Meteo** (no API key); radar frames from RainViewer. See `src/api/` and [docs/SATELLITE.md](docs/SATELLITE.md).

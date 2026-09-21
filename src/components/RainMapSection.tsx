@@ -8,99 +8,15 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
-  useWindowDimensions,
   Platform,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import { fetchRadarFrames, type RadarFrame } from '../api';
 import type { Connectivity } from '../connectivity/types';
+import { useSparkAppearance } from '../theme';
+import { planCardStyle, SparkTheme } from '../theme/SparkTheme';
 
-const MAP_HEIGHT = 180;
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    paddingTop: 0,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.95)',
-  },
-  box: {
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-  },
-  placeholder: {
-    height: MAP_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12,
-  },
-  placeholderText: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center',
-    padding: 16,
-  },
-  mapContainer: {
-    height: MAP_HEIGHT,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 8,
-    position: 'relative',
-  },
-  mapView: {
-    width: '100%',
-    height: MAP_HEIGHT,
-    borderRadius: 12,
-  },
-  radarOverlay: {
-    ...StyleSheet.absoluteFill,
-    borderRadius: 12,
-    opacity: 0.82,
-  },
-  radarImage: {
-    width: '100%',
-    height: MAP_HEIGHT,
-  },
-  sliderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  sliderLabel: {
-    fontSize: 10,
-    fontWeight: '500',
-    color: 'rgba(255,255,255,0.5)',
-  },
-  sliderButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  timeText: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.7)',
-  },
-  radarLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.6)',
-  },
-});
+const MAP_HEIGHT = 148;
 
 interface RainMapSectionProps {
   connectivity: Connectivity;
@@ -115,11 +31,11 @@ export function RainMapSection({
   longitude,
   noLocation,
 }: RainMapSectionProps) {
+  const { colors } = useSparkAppearance();
   const [frames, setFrames] = useState<RadarFrame[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [radarError, setRadarError] = useState(false);
   const [radarLoading, setRadarLoading] = useState(false);
-  const { width } = useWindowDimensions();
 
   const showMap = connectivity === 'good' && !noLocation && latitude != null && longitude != null;
 
@@ -150,21 +66,35 @@ export function RainMapSection({
       .finally(() => {
         if (!cancelled) setRadarLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [showMap, latitude, longitude]);
+
+  const boxStyle = [styles.box, planCardStyle(colors)];
+
+  const header = (
+    <View style={styles.header}>
+      <Text style={[styles.headerTitle, SparkTheme.Typography.productName, { color: colors.textInverse }]}>
+        Today Rain Map
+      </Text>
+    </View>
+  );
+
+  const placeholderText = (text: string) => (
+    <View style={[styles.placeholder, { height: MAP_HEIGHT }]}>
+      <Text style={[styles.placeholderText, SparkTheme.Typography.body, { color: colors.textInverse }]}>
+        {text}
+      </Text>
+    </View>
+  );
 
   if (noLocation) {
     return (
       <View style={styles.container}>
-        <View style={styles.box}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Today Rain Map</Text>
-          </View>
-          <View style={[styles.placeholder, { width: width - 40 }]}>
-            <Text style={styles.placeholderText}>
-              Location needed for rain map. Fix location and tap Refresh.
-            </Text>
-          </View>
+        <View style={boxStyle}>
+          {header}
+          {placeholderText('Location needed for rain map. Fix location and tap Refresh.')}
         </View>
       </View>
     );
@@ -173,15 +103,9 @@ export function RainMapSection({
   if (connectivity === 'none') {
     return (
       <View style={styles.container}>
-        <View style={styles.box}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Today Rain Map</Text>
-          </View>
-          <View style={[styles.placeholder, { width: width - 40 }]}>
-            <Text style={styles.placeholderText}>
-              No network. Weather will update when connected.
-            </Text>
-          </View>
+        <View style={boxStyle}>
+          {header}
+          {placeholderText('No network. Weather will update when connected.')}
         </View>
       </View>
     );
@@ -190,13 +114,9 @@ export function RainMapSection({
   if (connectivity === 'low') {
     return (
       <View style={styles.container}>
-        <View style={styles.box}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Today Rain Map</Text>
-          </View>
-          <View style={[styles.placeholder, { width: width - 40 }]}>
-            <Text style={styles.placeholderText}>Rain map available when status is Good data.</Text>
-          </View>
+        <View style={boxStyle}>
+          {header}
+          {placeholderText('Rain map available when status is Good data.')}
         </View>
       </View>
     );
@@ -209,15 +129,13 @@ export function RainMapSection({
 
   return (
     <View style={styles.container}>
-      <View style={styles.box}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Today Rain Map</Text>
-        </View>
+      <View style={boxStyle}>
+        {header}
         {latitude != null && longitude != null && (
           <>
-            <View style={styles.mapContainer}>
+            <View style={[styles.mapContainer, { borderRadius: SparkTheme.Radius.sm }]}>
               <MapView
-                style={styles.mapView}
+                style={[styles.mapView, { borderRadius: SparkTheme.Radius.sm }]}
                 mapType={Platform.OS === 'ios' ? 'satellite' : 'satellite'}
                 initialRegion={{
                   latitude,
@@ -231,7 +149,7 @@ export function RainMapSection({
                 rotateEnabled={false}
               />
               {frames.length > 0 && currentFrame?.imageURL ? (
-                <View style={styles.radarOverlay} pointerEvents="none">
+                <View style={[styles.radarOverlay, { borderRadius: SparkTheme.Radius.sm }]} pointerEvents="none">
                   <Image
                     source={{ uri: currentFrame.imageURL }}
                     style={StyleSheet.absoluteFill}
@@ -241,11 +159,13 @@ export function RainMapSection({
               ) : (
                 <View style={[StyleSheet.absoluteFill, styles.placeholder, { backgroundColor: 'transparent' }]}>
                   {radarLoading ? (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color={colors.ctaCyan} />
                   ) : radarError ? (
-                    <Text style={styles.placeholderText}>Unable to load radar</Text>
+                    <Text style={[styles.placeholderText, SparkTheme.Typography.body, { color: colors.textInverse }]}>
+                      Unable to load radar
+                    </Text>
                   ) : (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color={colors.ctaCyan} />
                   )}
                 </View>
               )}
@@ -256,29 +176,41 @@ export function RainMapSection({
                   style={styles.sliderButton}
                   onPress={() => setSelectedIndex((i) => Math.max(0, i - 1))}
                 >
-                  <Text style={styles.sliderLabel}>Older</Text>
+                  <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
+                    Older
+                  </Text>
                 </Pressable>
-                <Text style={styles.sliderLabel}>
+                <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
                   {selectedIndex + 1} / {frames.length}
                 </Text>
                 <Pressable
                   style={styles.sliderButton}
-                  onPress={() =>
-                    setSelectedIndex((i) => Math.min(frames.length - 1, i + 1))
-                  }
+                  onPress={() => setSelectedIndex((i) => Math.min(frames.length - 1, i + 1))}
                 >
-                  <Text style={styles.sliderLabel}>Newer</Text>
+                  <Text style={[styles.sliderLabel, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
+                    Newer
+                  </Text>
                 </Pressable>
               </View>
             )}
             <View style={styles.footer}>
-              {frames.length > 0 && (
-                <>
-                  <Text style={styles.timeText}>{timeStr}</Text>
-                  <Text style={styles.radarLabel}>·</Text>
-                </>
+              {frames.length > 0 ? (
+                <Text style={[styles.footerText, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
+                  {timeStr}
+                  <Text style={{ opacity: 0.7 }}> · </Text>
+                  <Text style={{ opacity: 0.8 }}>Radar · RainViewer</Text>
+                </Text>
+              ) : (
+                <Text
+                  style={[
+                    styles.footerText,
+                    SparkTheme.Typography.micro,
+                    { color: colors.textOnDark, opacity: 0.8 },
+                  ]}
+                >
+                  Radar · RainViewer
+                </Text>
               )}
-              <Text style={styles.radarLabel}>Radar · RainViewer</Text>
             </View>
           </>
         )}
@@ -286,3 +218,58 @@ export function RainMapSection({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: SparkTheme.Spacing.lg,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: SparkTheme.Spacing.sm,
+  },
+  headerTitle: {},
+  box: {
+    gap: SparkTheme.Spacing.sm,
+  },
+  placeholder: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    textAlign: 'center',
+    padding: SparkTheme.Spacing.md,
+  },
+  mapContainer: {
+    height: MAP_HEIGHT,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  mapView: {
+    width: '100%',
+    height: MAP_HEIGHT,
+  },
+  radarOverlay: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.82,
+  },
+  sliderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  sliderLabel: {},
+  sliderButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+  },
+  footerText: {
+    textAlign: 'center',
+  },
+});

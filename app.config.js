@@ -14,14 +14,14 @@ module.exports = {
   expo: {
     name: 'RN Spark Satellite Weather',
     slug: 'sparksatelliteweather-reactnative',
-    version: '1.1.0',
+    version: '1.2.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'dark',
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
-      backgroundColor: '#603494',
+      backgroundColor: '#1A0831',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -45,7 +45,7 @@ module.exports = {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#603494',
+        backgroundColor: '#1A0831',
       },
       package: 'com.akqa.rnsparksatelliteweather',
       permissions: ['ACCESS_FINE_LOCATION', 'ACCESS_COARSE_LOCATION'],

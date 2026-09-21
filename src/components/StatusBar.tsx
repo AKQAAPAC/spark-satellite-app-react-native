@@ -4,48 +4,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { getConnectivityDescription } from '../connectivity';
 import type { Connectivity } from '../connectivity/types';
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginHorizontal: 20,
-    marginBottom: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  left: {
-    flex: 1,
-    marginRight: 12,
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  right: {
-    alignItems: 'flex-end',
-  },
-  refreshButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 0,
-  },
-  refreshText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
-    textDecorationLine: 'underline',
-  },
-  lastFetch: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.75)',
-    marginTop: 6,
-    textAlign: 'right',
-  },
-});
+import { useSparkAppearance } from '../theme';
+import { SparkTheme } from '../theme/SparkTheme';
 
 interface StatusBarProps {
   connectivity: Connectivity;
@@ -61,17 +21,67 @@ function formatLastFetch(d: Date): string {
 }
 
 export function StatusBar({ connectivity, lastFetchAt, onRefresh }: StatusBarProps) {
+  const { colors } = useSparkAppearance();
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.bgPlan,
+          borderRadius: SparkTheme.Radius.sm,
+        },
+      ]}
+    >
       <View style={styles.left}>
-        <Text style={styles.statusText}>{getConnectivityDescription(connectivity)}</Text>
+        <Text style={[styles.statusText, SparkTheme.Typography.planLabel, { color: colors.textInverse }]}>
+          {getConnectivityDescription(connectivity)}
+        </Text>
       </View>
       <View style={styles.right}>
-        <Pressable style={styles.refreshButton} onPress={onRefresh}>
-          <Text style={styles.refreshText}>Refresh</Text>
+        <Pressable
+          style={[styles.refreshButton, { backgroundColor: colors.ctaCyan }]}
+          onPress={onRefresh}
+        >
+          <Text style={[styles.refreshText, SparkTheme.Typography.planLabel, { color: colors.bgBrand }]}>
+            Refresh
+          </Text>
         </Pressable>
-        {lastFetchAt != null ? <Text style={styles.lastFetch}>{formatLastFetch(lastFetchAt)}</Text> : null}
+        {lastFetchAt != null ? (
+          <Text style={[styles.lastFetch, SparkTheme.Typography.micro, { color: colors.textOnDark }]}>
+            {formatLastFetch(lastFetchAt)}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SparkTheme.Spacing.md,
+    paddingVertical: SparkTheme.Spacing.sm,
+    marginHorizontal: SparkTheme.Spacing.lg,
+  },
+  left: {
+    flex: 1,
+    marginRight: 12,
+  },
+  statusText: {},
+  right: {
+    alignItems: 'flex-end',
+  },
+  refreshButton: {
+    paddingVertical: SparkTheme.Spacing.xs,
+    paddingHorizontal: 12,
+    borderRadius: SparkTheme.Radius.full,
+  },
+  refreshText: {},
+  lastFetch: {
+    marginTop: SparkTheme.Spacing.xs,
+    textAlign: 'right',
+  },
+});
